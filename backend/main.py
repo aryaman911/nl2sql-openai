@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from openai_client import english_to_sql
 
+
 load_dotenv()
 
 app = FastAPI(title="English → SQL")
@@ -16,12 +17,11 @@ origins = os.getenv("CORS_ALLOW_ORIGINS")
 allow = [o for o in (origins.split(",") if origins else ["*"]) if o]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allow,
-    allow_credentials=True,
+    allow_origins=["*"],        # demo: allow any origin
+    allow_credentials=False,    # MUST be False when allow_origins=["*"]
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 ALLOW_DDL = os.getenv("ALLOW_DDL", "false").lower() in ("1", "true", "yes")
 
 class NLRequest(BaseModel):
