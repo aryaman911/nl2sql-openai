@@ -3,6 +3,7 @@ document.getElementById("backend-url").textContent = BACKEND;
 
 const form = document.getElementById("qform");
 const questionEl = document.getElementById("question");
+const opEl = document.getElementById("op");
 const resultEl = document.getElementById("result");
 const sqlEl = document.getElementById("sql");
 const copyBtn = document.getElementById("copy");
@@ -10,6 +11,7 @@ const copyBtn = document.getElementById("copy");
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const question = questionEl.value.trim();
+  const op = opEl.value;
   if (!question) return;
   sqlEl.textContent = "Generating...";
   resultEl.classList.remove("hidden");
@@ -18,7 +20,7 @@ form.addEventListener("submit", async (e) => {
     const r = await fetch(`${BACKEND}/nl2sql`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question }),
+      body: JSON.stringify({ question, op }),
     });
     if (!r.ok) throw new Error(await r.text());
     const data = await r.json();

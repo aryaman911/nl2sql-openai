@@ -5,17 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>NL → SQL (OpenAI)</title>
     <link rel="stylesheet" href="style.css" />
-    <!-- When you deploy the backend, replace the URL below -->
-    <script>window.BACKEND_URL = "http://localhost:8000";</script>
+    <!-- For local dev; replace with your deployed backend URL when live -->
+    <script>window.BACKEND_URL="http://localhost:8000";</script>
   </head>
   <body>
     <main>
       <h1>Natural Language → SQL</h1>
-      <p class="note">Returns a single SELECT statement you can copy & paste.</p>
+      <p class="note">Generates a single SQL statement you can copy & paste.</p>
 
       <form id="qform">
         <label for="question">Ask in plain English</label>
-        <textarea id="question" rows="4" placeholder="e.g., show top 10 products by revenue in 2024"></textarea>
+        <textarea id="question" rows="4" placeholder="e.g., insert a new customer named Alice with email alice@example.com"></textarea>
+
+        <div class="row">
+          <label for="op">Operation</label>
+          <select id="op">
+            <option value="auto" selected>Auto</option>
+            <option value="select">SELECT</option>
+            <option value="insert">INSERT</option>
+            <option value="update">UPDATE</option>
+            <option value="delete">DELETE</option>
+          </select>
+        </div>
+
         <div class="row">
           <button type="submit">Generate SQL</button>
           <button id="copy" type="button" title="Copy to clipboard">Copy</button>
