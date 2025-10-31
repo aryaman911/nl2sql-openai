@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NL → SQL (OpenAI)</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- When you deploy the backend, replace the URL below -->
+    <script>window.BACKEND_URL = "http://localhost:8000";</script>
+  </head>
+  <body>
+    <main>
+      <h1>Natural Language → SQL</h1>
+      <p class="note">Returns a single SELECT statement you can copy & paste.</p>
+
+      <form id="qform">
+        <label for="question">Ask in plain English</label>
+        <textarea id="question" rows="4" placeholder="e.g., show top 10 products by revenue in 2024"></textarea>
+        <div class="row">
+          <button type="submit">Generate SQL</button>
+          <button id="copy" type="button" title="Copy to clipboard">Copy</button>
+        </div>
+      </form>
+
+      <section id="result" class="hidden">
+        <h2>SQL</h2>
+        <pre id="sql"></pre>
+      </section>
+
+      <footer>
+        <small>Backend: <code id="backend-url"></code></small>
+      </footer>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
