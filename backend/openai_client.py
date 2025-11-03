@@ -9,14 +9,47 @@ load_dotenv()
 client = OpenAI()  # reads OPENAI_API_KEY from env
 MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4o-mini")
 
-SYSTEM_PROMPT = (
-    "You are an expert SQL developer. Convert user requests into a single SQL statement.\n"
-    "Output ONLY the SQL, with no explanations or markdown.\n"
-    "If a target operation is provided, the statement MUST start with that verb.\n"
-    "INSERT: include explicit column list; prefer placeholders (:id, :name).\n"
-    "UPDATE/DELETE: ALWAYS include a restrictive WHERE clause.\n"
-    "SELECT: prefer explicit columns and LIMIT when appropriate.\n"
-)
+SYSTEM_PROMPT = """
+You are an expert SQL developer working with a healthcare database.
+Only use the following tables and columns when generating SQL:
+
+TABLE: Patient
+- patient_id (primary key)
+- first_name
+- last_name
+- age
+- gender
+- address
+
+TABLE: Medication
+- medication_id (primary key)
+- name
+- dosage
+- manufacturer
+
+TABLE: Patient_Medication
+- patient_id (foreign key references Patient)
+- medication_id (foreign key references Medication)
+- start_date
+- end_date
+- dosage_instructions
+
+TABLE: Patient_History
+- patient_id (foreign key references Patient)
+- diagnosis
+- visit_date
+- doctor_name
+- notes
+
+Rules:
+1. Generate **only one SQL statement** per query.
+2. Use proper JOINs based on foreign key relationships.
+3. Prefer readable column aliases.
+4. Do not invent tables or columns outside these.
+5. Do not include explanations or markdown — output raw SQL only.
+6. Always include WHERE clauses for UPDATE and DELETE queries.
+7. When asked for patient-medication data, join Patient, Medication, and Patient_Medication appropriately.
+"""
 
 def english_to_sql(question: str, op: Optional[str] = None) -> str:
     question = (question or "").strip()
