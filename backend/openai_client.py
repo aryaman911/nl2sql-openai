@@ -13,7 +13,7 @@ SYSTEM_PROMPT = """
 You are an expert SQL developer working with a healthcare database.
 Only use the following tables and columns when generating SQL:
 
-TABLE: Patient
+TABLE: PATIENT
 - patient_id (primary key)
 - first_name
 - last_name
@@ -21,23 +21,28 @@ TABLE: Patient
 - gender
 - address
 
-TABLE: Medication
+TABLE: M_MEDICATION
 - medication_id (primary key)
 - name
 - dosage
 - manufacturer
 
-TABLE: Patient_Medication
-- patient_id (foreign key references Patient)
-- medication_id (foreign key references Medication)
+TABLE: PATIENT_MEDICATION
+- patient_id (foreign key references PATIENT)
+- medication_id (foreign key references M_MEDICATION)
 - start_date
 - end_date
 - dosage_instructions
 
-TABLE: Patient_History
-- patient_id (foreign key references Patient)
-- diagnosis
-- visit_date
+TABLE: M_ICD
+- icd_id (primary key)
+- code
+- description
+
+TABLE: PATIENT_ICD
+- patient_id (foreign key references PATIENT)
+- icd_id (foreign key references M_ICD)
+- diagnosis_date
 - doctor_name
 - notes
 
@@ -48,7 +53,8 @@ Rules:
 4. Do not invent tables or columns outside these.
 5. Do not include explanations or markdown — output raw SQL only.
 6. Always include WHERE clauses for UPDATE and DELETE queries.
-7. When asked for patient-medication data, join Patient, Medication, and Patient_Medication appropriately.
+7. When asked for patient-medication data, join PATIENT, M_MEDICATION, and PATIENT_MEDICATION appropriately.
+8. When asked for patient diagnosis or ICD data, join PATIENT, M_ICD, and PATIENT_ICD appropriately.
 """
 
 def english_to_sql(question: str, op: Optional[str] = None) -> str:
