@@ -15,12 +15,16 @@
 
       <form id="qform">
         <label for="question">Ask in plain English</label>
-        <textarea id="question" rows="4" placeholder="e.g., insert a new customer named Alice with email alice@example.com"></textarea>
+        <textarea
+          id="question"
+          rows="4"
+          placeholder="e.g., list the first 10 patients older than 60, or show all medications for patient 123"
+        ></textarea>
 
         <div class="row">
           <label for="op">Operation</label>
           <select id="op">
-            <option value="auto" selected>Auto</option>
+            <option value="auto" selected>Auto (read-only)</option>
             <option value="select">SELECT</option>
           </select>
         </div>
@@ -32,12 +36,12 @@
       </form>
 
       <section id="result" class="hidden">
-  <h2>SQL</h2>
-  <pre id="sql"></pre>
+        <h2>SQL</h2>
+        <pre id="sql"></pre>
 
-  <h2>Result rows</h2>
-  <pre id="rows"></pre>
-  </section>
+        <h2>Result rows</h2>
+        <pre id="rows"></pre>
+      </section>
 
       <footer>
         <small>Backend: <code id="backend-url"></code></small>
