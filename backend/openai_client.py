@@ -1,13 +1,18 @@
-# backend/openai_client.py
 from __future__ import annotations
+
 import os
 from typing import Optional
+
 from dotenv import load_dotenv
 from openai import OpenAI
 
 load_dotenv()
-client = OpenAI()  # reads OPENAI_API_KEY from env
-MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4o-mini")
+
+# Use OpenAI's Python SDK v1.x style client
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+# You can override the model via env if you want (e.g., gpt-4o)
+MODEL_NAME = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
 SYSTEM_PROMPT = """
 You are an expert SQL generator.
@@ -41,14 +46,14 @@ TABLE: Medication
 - manufacturer
 
 TABLE: Patient_Medication
-- patient_id   (FK → Patient.patient_id)
-- medication_id (FK → Medication.medication_id)
+- patient_id       (FK → Patient.patient_id)
+- medication_id    (FK → Medication.medication_id)
 - start_date
 - end_date
 - dosage_instructions
 
 TABLE: Patient_History
-- patient_id   (FK → Patient.patient_id)
+- patient_id       (FK → Patient.patient_id)
 - diagnosis
 - visit_date
 - doctor_name
@@ -59,18 +64,33 @@ Your ONLY job:
 Given a natural language question, return ONE SQL SELECT query that only uses the schema above.
 """
 
-def english_to_sql(question: str, op: Optional[str] = None) -> str:
-    question = (question or "").strip()
-    target = f"Target operation: {op.upper()}" if op and op.lower() != "auto" else "Target operation: AUTO"
 
-    # Use Chat Completions for broad compatibility across SDK versions
-    resp = client.chat.completions.create(
+def english_to_sql(question: str, op: Optional[str] = None) -> str:
+    """
+    Convert an English question into a single SQL SELECT statement
+    constrained to the schema defined in SYSTEM_PROMPT.
+    """
+    question = (question or "").strip()
+    if not question:
+        return ""
+
+    # Optionally include the desired op for clarity, even though we force SELECT in backend
+    if op and op.lower() in ("select", "insert", "update", "delete"):
+        user_content = f"Operation: {op.upper()}\n\nQuestion: {question}"
+    else:
+        user_content = question
+
+    response = client.chat.completions.create(
         model=MODEL_NAME,
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": f"{target}\nNatural language request: {question}\nSQL:"},
+            {"role": "user", "content": user_content},
         ],
         temperature=0,
-        max_tokens=400,
     )
-    return (resp.choices[0].message.content or "").strip()
+
+    sql = response.choices[0].message.content or ""
+    sql = sql.strip()
+
+    # Just return as-is; main.py will normalize whitespace and guardrail.
+    return sql
