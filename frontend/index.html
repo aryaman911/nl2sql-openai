@@ -11,7 +11,7 @@
   <body>
     <main>
       <h1>Natural Language → SQL</h1>
-      <p class="note">Generates a single SQL statement you can copy & paste.</p>
+      <p class="note">Generates a single SQL statement and runs it on your database (read-only).</p>
 
       <form id="qform">
         <label for="question">Ask in plain English</label>
@@ -22,9 +22,6 @@
           <select id="op">
             <option value="auto" selected>Auto</option>
             <option value="select">SELECT</option>
-            <option value="insert">INSERT</option>
-            <option value="update">UPDATE</option>
-            <option value="delete">DELETE</option>
           </select>
         </div>
 
@@ -35,9 +32,12 @@
       </form>
 
       <section id="result" class="hidden">
-        <h2>SQL</h2>
-        <pre id="sql"></pre>
-      </section>
+  <h2>SQL</h2>
+  <pre id="sql"></pre>
+
+  <h2>Result rows</h2>
+  <pre id="rows"></pre>
+  </section>
 
       <footer>
         <small>Backend: <code id="backend-url"></code></small>
